@@ -1,0 +1,55 @@
+plugins {
+    id 'application'
+    id 'com.gluonhq.client-gradle-plugin' version '0.1.36'  //requires GraalVM 21+
+}
+
+wrapper {
+    gradleVersion = "6.8.3"
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+group = 'com.github.chirontt'
+description = "JGit HTTP server's native executable built by GraalVM"
+
+ext {
+    mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
+    jgitReleaseVersion = '5.10.0.202012080955-r'
+    jettyVersion = '9.4.36.v20210114'
+    slf4jVersion = '1.7.30'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+compileJava {
+    options.release = 11  //use JDK11+ for compiling & running
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    implementation "org.eclipse.jgit:org.eclipse.jgit.http.server:$jgitReleaseVersion"
+    implementation "org.eclipse.jetty:jetty-servlet:$jettyVersion"
+    implementation "org.slf4j:slf4j-simple:$slf4jVersion"
+}
+
+application {
+    mainClass = project.mainClassName
+    applicationName = project.name
+}
+
+gluonClient {
+    def buildTimeInitClasses = file('src/main/resources/META-INF/substrate/config/initbuildtime').getText('UTF-8').trim()
+    def runTimeInitClasses = [
+        'org.eclipse.jgit.lib.internal.WorkQueue',
+        'org.eclipse.jgit.lib.RepositoryCache',
+        'org.eclipse.jgit.transport.HttpAuthMethod',
+    ]
+
+    compilerArgs = [
+        '--initialize-at-build-time=' + buildTimeInitClasses,
+        '--initialize-at-run-time=' + runTimeInitClasses.join(','),
+    ]
+}
+

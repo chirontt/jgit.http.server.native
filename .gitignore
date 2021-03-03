@@ -1,0 +1,11 @@
+.classpath
+.gradle
+.idea
+.mvn
+.project
+.settings
+.vscode
+# Ignore build output directories
+bin
+build
+target

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.chirontt</groupId>
+    <artifactId>jgit.http.server.native</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>JGitHttpServer</name> <!-- name of the resulting native executable -->
+    <description>JGit HTTP server's native executable built by GraalVM</description>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jgit.release.version>5.10.0.202012080955-r</jgit.release.version>
+        <client.maven.plugin.version>0.1.36</client.maven.plugin.version> <!-- requires GraalVM 21+ -->
+        <jetty.version>9.4.36.v20210114</jetty.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <!-- main class name for exec:java plugin task -->
+        <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
+        <run.time.init>org.eclipse.jgit.lib.internal.WorkQueue,org.eclipse.jgit.lib.RepositoryCache,org.eclipse.jgit.transport.HttpAuthMethod</run.time.init>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit.http.server</artifactId>
+            <version>${jgit.release.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.gluonhq</groupId>
+                <artifactId>client-maven-plugin</artifactId>
+                <version>${client.maven.plugin.version}</version>
+                <configuration>
+                    <mainClass>${exec.mainClass}</mainClass>
+                    <nativeImageArgs>
+                        <nativeImageArg>--initialize-at-run-time=${run.time.init}</nativeImageArg>
+                    </nativeImageArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
