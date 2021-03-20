@@ -14,9 +14,9 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jgit.release.version>5.10.0.202012080955-r</jgit.release.version>
+        <jgit.release.version>5.11.0.202103091610-r</jgit.release.version>
         <client.maven.plugin.version>0.1.36</client.maven.plugin.version> <!-- requires GraalVM 21+ -->
-        <jetty.version>9.4.36.v20210114</jetty.version>
+        <jetty.version>9.4.38.v20210224</jetty.version>
         <slf4j.version>1.7.30</slf4j.version>
         <!-- main class name for exec:java plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>

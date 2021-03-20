@@ -15,7 +15,6 @@
     {"name":"org.eclipse.jgit.gitrepo.internal.RepoText"}, 
     {"name":"org.eclipse.jgit.http.server.HttpServerText"}, 
     {"name":"org.eclipse.jgit.internal.JGitText"}, 
-    {"name":"org.eclipse.jgit.internal.ketch.KetchText"}, 
     {"name":"org.eclipse.jgit.internal.storage.dfs.DfsText"}
   ]
 }

@@ -1,7 +1,6 @@
 .classpath
 .gradle
 .idea
-.mvn
 .project
 .settings
 .vscode

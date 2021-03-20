@@ -29,12 +29,6 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"org.eclipse.jgit.internal.ketch.KetchText",
-  "allDeclaredFields":true,
-  "allDeclaredMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"org.eclipse.jgit.internal.storage.dfs.DfsText",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
