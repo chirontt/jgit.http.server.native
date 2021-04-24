@@ -1,6 +1,7 @@
 plugins {
     id 'application'
-    id 'com.gluonhq.client-gradle-plugin' version '0.1.36'  //requires GraalVM 21+
+    id 'org.openjfx.javafxplugin' version '0.0.9'  //requires JDK11+
+    id 'com.gluonhq.client-gradle-plugin' version '0.1.39'  //requires GraalVM 21.1+
 }
 
 wrapper {
@@ -42,9 +43,11 @@ application {
 gluonClient {
     def buildTimeInitClasses = file('src/main/resources/META-INF/substrate/config/initbuildtime').getText('UTF-8').trim()
     def runTimeInitClasses = [
+        'org.eclipse.jgit.internal.storage.file.WindowCache',
         'org.eclipse.jgit.lib.internal.WorkQueue',
         'org.eclipse.jgit.lib.RepositoryCache',
         'org.eclipse.jgit.transport.HttpAuthMethod',
+        'org.eclipse.jgit.util.FileUtils',
     ]
 
     compilerArgs = [
