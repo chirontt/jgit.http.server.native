@@ -15,12 +15,12 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jgit.release.version>5.10.0.202012080955-r</jgit.release.version>
-        <client.maven.plugin.version>0.1.36</client.maven.plugin.version> <!-- requires GraalVM 21+ -->
+        <client.maven.plugin.version>0.1.39</client.maven.plugin.version> <!-- requires GraalVM 21.1+ -->
         <jetty.version>9.4.36.v20210114</jetty.version>
         <slf4j.version>1.7.30</slf4j.version>
         <!-- main class name for exec:java plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
-        <run.time.init>org.eclipse.jgit.lib.internal.WorkQueue,org.eclipse.jgit.lib.RepositoryCache,org.eclipse.jgit.transport.HttpAuthMethod</run.time.init>
+        <run.time.init>org.eclipse.jgit.internal.storage.file.WindowCache,org.eclipse.jgit.lib.internal.WorkQueue,org.eclipse.jgit.lib.RepositoryCache,org.eclipse.jgit.transport.HttpAuthMethod,org.eclipse.jgit.util.FileUtils</run.time.init>
     </properties>
 
     <dependencies>
