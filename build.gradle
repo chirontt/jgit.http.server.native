@@ -1,11 +1,11 @@
 plugins {
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.9'  //requires JDK11+
-    id 'com.gluonhq.client-gradle-plugin' version '0.1.39'  //requires GraalVM 21.1+
+    id 'org.openjfx.javafxplugin' version '0.0.10'  //requires JDK11+
+    id 'com.gluonhq.client-gradle-plugin' version '0.1.40'  //requires GraalVM 21.1+
 }
 
 wrapper {
-    gradleVersion = "6.8.3"
+    gradleVersion = "7.0.2"
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -14,8 +14,8 @@ description = "JGit HTTP server's native executable built by GraalVM"
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '5.11.0.202103091610-r'
-    jettyVersion = '9.4.38.v20210224'
+    jgitReleaseVersion = '5.11.1.202105131744-r'
+    jettyVersion = '9.4.40.v20210413'
     slf4jVersion = '1.7.30'
 }
 
