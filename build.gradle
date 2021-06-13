@@ -14,8 +14,8 @@ description = "JGit HTTP server's native executable built by GraalVM"
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '5.11.1.202105131744-r'
-    jettyVersion = '9.4.40.v20210413'
+    jgitReleaseVersion = '5.12.0.202106070339-r'
+    jettyVersion = '9.4.42.v20210604'
     slf4jVersion = '1.7.30'
 }
 
