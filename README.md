@@ -24,79 +24,73 @@ shows how to set up GraalVM and its native-image utility for common platforms.
 [Gluon](https://gluonhq.com/) also provides some setup [details](https://docs.gluonhq.com/#_platforms)
 for GraalVM native-image creation.
 
-This project's Gradle build script uses the [client-gradle-plugin](https://github.com/gluonhq/client-gradle-plugin)
-from Gluon to build the native executable from Gradle with GraalVM.
-
 The GraalVM native-image utility will use the configuration files in
 `src/main/resources/META-INF/native-image` folder to assist in the native-image generation.
-
-Gluon also provides the [client-maven-plugin](https://github.com/gluonhq/client-maven-plugin)
-which is used in this project's Maven build script. This Maven plugin, which works similarly to the above
-client-gradle-plugin, also uses the `src/main/resources/META-INF/substrate/config/initbuildtime` file
-as the list of packages/classes to be initialized at image build time by GraalVM during the
-native-image generation.
 
 ## Gradle build tasks
 
 To build and run the Git server in standard JVM with Gradle, execute the `run` task with
 port number and the path to the local git repos as parameters:
 
+	gradlew run
 	gradlew run --args="8080 /path/to/repos"
 
-To generate native executable, run the `nativeBuild` task:
+To generate native executable, run the `nativeImage` task:
 
-	gradlew nativeBuild
+	gradlew nativeImage
 
-The `nativeBuild` task would take a while to compile the source code and link into an executable file.
+The `nativeImage` task would take a while to compile the source code and link into an executable file.
 The resulting `JGitHttpServer` file is in:
 
-	build/client/x86_64-linux/JGitHttpServer
+	build/native-image/JGitHttpServer
 
 (or if building on a Windows machine:
 
-	build\client\x86_64-windows\JGitHttpServer.exe
+	build\native-image\JGitHttpServer.exe
 
 )
 
 which can then be run directly (with parameters):
 
-	./build/client/x86_64-linux/JGitHttpServer 8080 /path/to/repos
+	./build/native-image/JGitHttpServer 8080 /path/to/repos
 
 (or if building on a Windows machine:
 
-	build\client\x86_64-windows\JGitHttpServer.exe 8080 \path\to\repos
+	build\native-image\JGitHttpServer.exe 8080 \path\to\repos
 
 )
 
 ## Maven build tasks
 
-To build and run the Git server in standard JVM with Maven, execute the `compile` and `exec:java`
+To build and run the Git server in standard JVM with Maven, execute the `compile` and `exec:exec`
 tasks with port number and the path to the local git repos as parameters:
 
-	mvn compile exec:java -Dexec.args="8080 /path/to/repos"
+	mvnw compile
+	mvnw exec:exec
+	mvnw exec:exec -Dexec.port=8080 -Dexec.base-path=/path/to/repos
 
-To generate native executable, run the `client:build` task:
+To generate native executable, run the `package` task:
 
-	mvn client:build
+	mvnw package
 
-The `client:build` task would take a while to compile the source code and link into an executable file.
+The `package` task would take a while to compile the source code and link into an executable file.
 The resulting `JGitHttpServer` file is in:
 
-	target/client/x86_64-linux/JGitHttpServer
+	target/native-image/JGitHttpServer
 
 (or if building on a Windows machine:
 
-	target\client\x86_64-windows\JGitHttpServer.exe
+	target\native-image\JGitHttpServer.exe
 
 )
 
 which can then be run directly (with parameters):
 
-	./target/client/x86_64-linux/JGitHttpServer 8080 /path/to/repos
+	./target/native-image/JGitHttpServer 8080 /path/to/repos
 
 (or if building on a Windows machine:
 
-	target\client\x86_64-windows\JGitHttpServer.exe 8080 \path\to\repos
+	target\native-image\JGitHttpServer.exe 8080 \path\to\repos
 
 )
 
@@ -107,5 +101,5 @@ can be further reduced in size via compression using the [UPX](https://upx.githu
 as described [here](https://medium.com/graalvm/compressed-graalvm-native-images-4d233766a214).
 
 As an example, the resulting `JGitHttpServer.exe` native application file produced in Windows
-is normally 50MB in size, but is compressed to 13MB with the UPX command: `upx --best JGitHttpServer.exe`
+is normally 32MB in size, but is compressed to 9MB with the UPX command: `upx --best JGitHttpServer.exe`
 

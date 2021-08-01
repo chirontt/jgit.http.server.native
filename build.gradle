@@ -1,11 +1,10 @@
 plugins {
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.10'  //requires JDK11+
-    id 'com.gluonhq.client-gradle-plugin' version '0.1.40'  //requires GraalVM 21.1+
+    id 'org.mikeneck.graalvm-native-image' version '1.4.1'
 }
 
 wrapper {
-    gradleVersion = "7.0.2"
+    gradleVersion = '7.1.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -15,8 +14,9 @@ description = "JGit HTTP server's native executable built by GraalVM"
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
     jgitReleaseVersion = '5.12.0.202106070339-r'
-    jettyVersion = '9.4.42.v20210604'
-    slf4jVersion = '1.7.30'
+    jettyVersion = '9.4.43.v20210629'
+    slf4jVersion = '1.7.32'
+    nativeImageDirName = 'native-image'
 }
 
 repositories {
@@ -40,8 +40,54 @@ application {
     applicationName = project.name
 }
 
-gluonClient {
-    def buildTimeInitClasses = file('src/main/resources/META-INF/substrate/config/initbuildtime').getText('UTF-8').trim()
+run {
+    //run with default port and base-path
+    args = ['8080', '/git']
+
+    //get system properties specified from the command line (for debugging, etc.)
+    //and pass them on to the running application's JVM
+    systemProperties = System.getProperties()
+
+    //use the following jvmArgs for as many different run scenarios as possible,
+    //and for all the code-execution paths as much as possible,
+    //to generate (or merge with) the GraalVM native-image configuration files
+    //in the src/main/resources/META-INF/native-image directory.
+    //This directory is read by GraalVM during the native-image build.
+
+    //jvmArgs = ["-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image"]
+}
+
+//remove unneeded .dll/.txt files
+task removeUnneededDllFiles {
+    doLast {
+        ant.move(todir: "$buildDir/tmp/$nativeImageDirName") {
+            fileset(dir: "$buildDir/$nativeImageDirName") {
+                include name: '*.dll'
+                include name: '*.txt'
+            }
+        }
+    }
+}
+
+nativeImage {
+    graalVmHome = System.getProperty('java.home')
+    buildType { org.mikeneck.graalvm.BuildTypeSelector build ->
+        build.executable {
+            main = project.mainClassName
+        }
+    }
+    executableName = project.name
+    outputDirectory = file("$buildDir/$nativeImageDirName")
+
+    //packages/classes to be initialized at native image build time
+    def buildTimeInitClasses = [
+        'javax.servlet',
+        'org.eclipse.jetty',
+        'org.eclipse.jgit',
+        'org.slf4j',
+    ]
+
+    //packages/classes to be initialized at native image run time
     def runTimeInitClasses = [
         'org.eclipse.jgit.internal.storage.file.WindowCache',
         'org.eclipse.jgit.lib.internal.WorkQueue',
@@ -50,9 +96,23 @@ gluonClient {
         'org.eclipse.jgit.util.FileUtils',
     ]
 
-    compilerArgs = [
-        '--initialize-at-build-time=' + buildTimeInitClasses,
-        '--initialize-at-run-time=' + runTimeInitClasses.join(','),
-    ]
+    arguments {
+        add '--no-fallback'
+        add '--enable-url-protocols=http,https'
+        add '--initialize-at-build-time=' + buildTimeInitClasses.join(',')
+        add '--initialize-at-run-time=' + runTimeInitClasses.join(',')
+        add '--report-unsupported-elements-at-runtime'
+        add '--native-image-info'
+        add '--verbose'
+        //add '-H:+TraceNativeToolUsage'
+        add "-H:TempDirectory=$buildDir/tmp/$nativeImageDirName"
+    }
+
+    finalizedBy removeUnneededDllFiles
+}
+
+generateNativeImageConfig {
+    enabled = false
+    //byRunningApplicationWithoutArguments()
 }
 

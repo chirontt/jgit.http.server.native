@@ -15,11 +15,21 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jgit.release.version>5.12.0.202106070339-r</jgit.release.version>
-        <client.maven.plugin.version>0.1.40</client.maven.plugin.version> <!-- requires GraalVM 21.1+ -->
-        <jetty.version>9.4.42.v20210604</jetty.version>
-        <slf4j.version>1.7.30</slf4j.version>
-        <!-- main class name for exec:java plugin task -->
+        <jetty.version>9.4.43.v20210629</jetty.version>
+        <slf4j.version>1.7.32</slf4j.version>
+        <native.maven.plugin.version>0.9.2</native.maven.plugin.version>
+        <native.image.dir.name>native-image</native.image.dir.name>
+        <!-- main class name for exec:exec plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
+        <exec.port>8080</exec.port>
+        <exec.base-path>/git</exec.base-path>
+        <!-- system properties for the application when run by exec:exec command;
+             can be specified on the command line with -Dsys.props="..."
+        -->
+        <sys.props></sys.props>
+        <!-- packages/classes to be initialized at native image build time -->
+        <build.time.init>javax.servlet,org.eclipse.jetty,org.eclipse.jgit,org.slf4j</build.time.init>
+        <!-- packages/classes to be initialized at native image run time -->
         <run.time.init>org.eclipse.jgit.internal.storage.file.WindowCache,org.eclipse.jgit.lib.internal.WorkQueue,org.eclipse.jgit.lib.RepositoryCache,org.eclipse.jgit.transport.HttpAuthMethod,org.eclipse.jgit.util.FileUtils</run.time.init>
     </properties>
 
@@ -44,14 +54,90 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.gluonhq</groupId>
-                <artifactId>client-maven-plugin</artifactId>
-                <version>${client.maven.plugin.version}</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <!-- GraalVM's agent to generate (or merge with) native-image configuration files -->
+                        <!-- argument>-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image</argument -->
+                        <argument>${sys.props}</argument>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>${exec.mainClass}</argument>
+                        <argument>${exec.port}</argument>
+                        <argument>${exec.base-path}</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>${native.maven.plugin.version}</version>
+                <executions>
+                    <!-- execution>
+                        <id>test-native</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                    </execution -->
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- outputDir>${project.build.directory}/${native.image.dir.name}</outputDir -->
+                    <imageName>${project.name}</imageName>
                     <mainClass>${exec.mainClass}</mainClass>
-                    <nativeImageArgs>
-                        <nativeImageArg>--initialize-at-run-time=${run.time.init}</nativeImageArg>
-                    </nativeImageArgs>
+                    <buildArgs>
+                        <buildArg>--no-fallback</buildArg>
+                        <buildArg>--enable-url-protocols=http,https</buildArg>
+                        <buildArg>--initialize-at-build-time=${build.time.init}</buildArg>
+                        <buildArg>--initialize-at-run-time=${run.time.init}</buildArg>
+                        <buildArg>--native-image-info</buildArg>
+                        <buildArg>--verbose</buildArg>
+                        <!-- buildArg>-H:+TraceNativeToolUsage</buildArg -->
+                        <buildArg>-H:TempDirectory=${project.build.directory}/tmp/${native.image.dir.name}</buildArg>
+                        <buildArg>-H:Path=${project.build.directory}/${native.image.dir.name}</buildArg>
+                    </buildArgs>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            <!-- remove unneeded .dll/.txt files -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>remove-unneeded-dll-files</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <target>
+                        <move todir="${project.build.directory}/tmp/${native.image.dir.name}">
+                            <fileset dir="${project.build.directory}/${native.image.dir.name}">
+                                <include name="*.dll"/>
+                                <include name="*.txt"/>
+                            </fileset>
+                        </move>
+                    </target>
                 </configuration>
             </plugin>
         </plugins>
