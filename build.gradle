@@ -8,8 +8,9 @@ wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-group = 'com.github.chirontt'
+group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
+version = '5.12.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
@@ -31,6 +32,7 @@ compileJava {
 
 dependencies {
     implementation "org.eclipse.jgit:org.eclipse.jgit.http.server:$jgitReleaseVersion"
+    implementation "org.eclipse.jgit:org.eclipse.jgit.lfs.server:$jgitReleaseVersion"
     implementation "org.eclipse.jetty:jetty-servlet:$jettyVersion"
     implementation "org.slf4j:slf4j-simple:$slf4jVersion"
 }
@@ -38,11 +40,12 @@ dependencies {
 application {
     mainClass = project.mainClassName
     applicationName = project.name
+    executableDir = ''
 }
 
 run {
-    //run with default port and base-path
-    args = ['8080', '/git']
+    //default parameter values for port, base-path, and lfs-path
+    args = ['8080', '/git', '/git-lfs-storage']
 
     //get system properties specified from the command line (for debugging, etc.)
     //and pass them on to the running application's JVM
@@ -81,6 +84,7 @@ nativeImage {
 
     //packages/classes to be initialized at native image build time
     def buildTimeInitClasses = [
+        'com.google.gson',
         'javax.servlet',
         'org.eclipse.jetty',
         'org.eclipse.jgit',

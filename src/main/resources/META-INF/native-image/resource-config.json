@@ -1,8 +1,10 @@
 {
   "resources":{
   "includes":[
-    {"pattern":"\\Qjetty-dir.css\\E"}, 
     {"pattern":"\\QMETA-INF/services/org.eclipse.jetty.http.HttpFieldPreEncoder\\E"}, 
+    {"pattern":"\\Qjetty-dir.css\\E"}, 
+    {"pattern":"\\Qmozilla/public-suffix-list.txt\\E"}, 
+    {"pattern":"\\Qorg/apache/http/client/version.properties\\E"}, 
     {"pattern":"\\Qorg/eclipse/jetty/favicon.ico\\E"}, 
     {"pattern":"\\Qorg/eclipse/jetty/http/encoding.properties\\E"}, 
     {"pattern":"\\Qorg/eclipse/jetty/http/mime.properties\\E"}, 
@@ -15,6 +17,9 @@
     {"name":"org.eclipse.jgit.gitrepo.internal.RepoText"}, 
     {"name":"org.eclipse.jgit.http.server.HttpServerText"}, 
     {"name":"org.eclipse.jgit.internal.JGitText"}, 
-    {"name":"org.eclipse.jgit.internal.storage.dfs.DfsText"}
+    {"name":"org.eclipse.jgit.internal.storage.dfs.DfsText"}, 
+    {"name":"org.eclipse.jgit.lfs.internal.LfsText"}, 
+    {"name":"org.eclipse.jgit.lfs.server.internal.LfsServerText"}, 
+    {"name":"org.eclipse.jgit.transport.http.apache.internal.HttpApacheText"}
   ]
 }

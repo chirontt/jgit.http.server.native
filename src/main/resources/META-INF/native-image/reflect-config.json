@@ -1,5 +1,12 @@
 [
 {
+  "name":"com.github.chirontt.gitserver.LfsBatchServlet",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":["org.eclipse.jgit.lfs.server.fs.FileLfsRepository"] }]
+},
+{
   "name":"org.eclipse.jgit.diff.DiffAlgorithm$SupportedAlgorithm",
   "methods":[{"name":"values","parameterTypes":[] }]
 },
@@ -35,6 +42,55 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.eclipse.jgit.lfs.internal.LfsText",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jgit.lfs.server.LfsObject",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jgit.lfs.server.LfsProtocolServlet$LfsRequest",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jgit.lfs.server.Response$Action",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.eclipse.jgit.lfs.server.Response$Body",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.eclipse.jgit.lfs.server.Response$Error",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.eclipse.jgit.lfs.server.Response$ObjectInfo",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.eclipse.jgit.lfs.server.fs.FileLfsServlet",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":["org.eclipse.jgit.lfs.server.fs.FileLfsRepository","long"] }]
+},
+{
+  "name":"org.eclipse.jgit.lfs.server.internal.LfsServerText",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"org.eclipse.jgit.lib.CoreConfig$AutoCRLF",
   "methods":[{"name":"values","parameterTypes":[] }]
 },
@@ -60,5 +116,11 @@
 {
   "name":"org.eclipse.jgit.lib.CoreConfig$SymLinks",
   "methods":[{"name":"values","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jgit.transport.http.apache.internal.HttpApacheText",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 }
 ]
