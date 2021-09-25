@@ -1,20 +1,20 @@
 plugins {
     id 'application'
-    id 'org.mikeneck.graalvm-native-image' version '1.4.1'
+    id 'org.graalvm.buildtools.native' version '0.9.5'
 }
 
 wrapper {
-    gradleVersion = '7.1.1'
+    gradleVersion = '7.2'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
-version = '5.12.0'
+version = '5.13.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '5.12.0.202106070339-r'
+    jgitReleaseVersion = '5.13.0.202109080827-r'
     jettyVersion = '9.4.43.v20210629'
     slf4jVersion = '1.7.32'
     nativeImageDirName = 'native-image'
@@ -51,13 +51,19 @@ run {
     //and pass them on to the running application's JVM
     systemProperties = System.getProperties()
 
-    //use the following jvmArgs for as many different run scenarios as possible,
-    //and for all the code-execution paths as much as possible,
-    //to generate (or merge with) the GraalVM native-image configuration files
-    //in the src/main/resources/META-INF/native-image directory.
-    //This directory is read by GraalVM during the native-image build.
+    jvmArgs = [
+        //use the following jvmArgs for as many different run scenarios as possible,
+        //and for all the code-execution paths as much as possible,
+        //to generate (or merge with) the GraalVM native-image configuration files
+        //in the src/main/resources/META-INF/native-image directory.
+        //This directory is read by GraalVM during the native-image build.
+        //"-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image",
 
-    //jvmArgs = ["-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image"]
+        //enable debug logs of various subsystems
+        //'-Djava.security.debug=all',
+        //'-Djavax.net.debug=all',
+        '-Dorg.eclipse.jetty.LEVEL=DEBUG',
+    ]
 }
 
 //remove unneeded .dll/.txt files
@@ -72,51 +78,69 @@ task removeUnneededDllFiles {
     }
 }
 
-nativeImage {
-    graalVmHome = System.getProperty('java.home')
-    buildType { org.mikeneck.graalvm.BuildTypeSelector build ->
-        build.executable {
-            main = project.mainClassName
-        }
-    }
-    executableName = project.name
-    outputDirectory = file("$buildDir/$nativeImageDirName")
-
-    //packages/classes to be initialized at native image build time
-    def buildTimeInitClasses = [
-        'com.google.gson',
-        'javax.servlet',
-        'org.eclipse.jetty',
-        'org.eclipse.jgit',
-        'org.slf4j',
-    ]
-
-    //packages/classes to be initialized at native image run time
-    def runTimeInitClasses = [
-        'org.eclipse.jgit.internal.storage.file.WindowCache',
-        'org.eclipse.jgit.lib.internal.WorkQueue',
-        'org.eclipse.jgit.lib.RepositoryCache',
-        'org.eclipse.jgit.transport.HttpAuthMethod',
-        'org.eclipse.jgit.util.FileUtils',
-    ]
-
-    arguments {
-        add '--no-fallback'
-        add '--enable-url-protocols=http,https'
-        add '--initialize-at-build-time=' + buildTimeInitClasses.join(',')
-        add '--initialize-at-run-time=' + runTimeInitClasses.join(',')
-        add '--report-unsupported-elements-at-runtime'
-        add '--native-image-info'
-        add '--verbose'
-        //add '-H:+TraceNativeToolUsage'
-        add "-H:TempDirectory=$buildDir/tmp/$nativeImageDirName"
+//create a stand-alone executable uber jar
+//including all dependencies
+task uberJar(type: Jar) {
+    with jar
+    archiveClassifier = 'no-deps'
+    manifest {
+        attributes(
+            'Main-Class': project.mainClassName,
+            'Built-By': System.getProperty('user.name'),
+            'Created-By': System.getProperty('java.runtime.version') + ' (' + System.getProperty('java.vendor') + ')',
+            'Gradle-Version': 'Gradle ' + gradle.getGradleVersion(),
+        )
     }
 
-    finalizedBy removeUnneededDllFiles
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    duplicatesStrategy 'exclude'
 }
 
-generateNativeImageConfig {
-    enabled = false
-    //byRunningApplicationWithoutArguments()
+graalvmNative {
+    binaries {
+        main {
+            imageName = project.name
+            mainClass = project.mainClassName
+            debug = true
+            verbose = true
+            fallback = false
+
+            //packages/classes to be initialized at native image build time
+            def buildTimeInitClasses = [
+                'com.google.gson',
+                'javax.servlet',
+                'org.eclipse.jetty',
+                'org.eclipse.jgit',
+                'org.slf4j',
+            ]
+
+            //packages/classes to be initialized at native image run time
+            def runTimeInitClasses = [
+                'org.eclipse.jgit.internal.storage.file.WindowCache',
+                'org.eclipse.jgit.lib.internal.WorkQueue',
+                'org.eclipse.jgit.lib.RepositoryCache',
+                'org.eclipse.jgit.transport.HttpAuthMethod',
+                'org.eclipse.jgit.util.FileUtils',
+            ]
+
+            buildArgs.add('--enable-url-protocols=http,https')
+            buildArgs.add('--initialize-at-build-time=' + buildTimeInitClasses.join(','))
+            buildArgs.add('--initialize-at-run-time=' + runTimeInitClasses.join(','))
+            buildArgs.add("-H:Path=$buildDir/$nativeImageDirName")
+            buildArgs.add("-H:TempDirectory=$buildDir/tmp/$nativeImageDirName")
+
+            useFatJar = false
+        }
+    }
+}
+
+tasks.named("nativeCompile") {
+    //use the uber jar if long classpath becomes a problem in Windows:
+    //dependsOn uberJar
+    //classpathJar = uberJar.archiveFile
+    finalizedBy removeUnneededDllFiles
 }
 

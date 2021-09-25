@@ -148,7 +148,7 @@ public class JGitHttpServer {
                 //set up the LFS batch servlet for this repo
                 FileLfsRepository fsRepo = new FileLfsRepository(
                         baseURI + "/" + repoName + "/info/lfs/" + OBJECTS, Paths.get(lfsPath, repoName));
-                context.addServlet(new ServletHolder(new LfsBatchServlet(fsRepo)),
+                context.addServlet(new ServletHolder(new LfsBatchServlet(fsRepo, path)),
                                    "/" + repoName + BATCH_API_PATH);
                 //set up the LFS content servlet for this repo
                 //with timeout of 5 minutes for object upload/download

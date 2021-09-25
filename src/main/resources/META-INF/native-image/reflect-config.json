@@ -4,7 +4,7 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.eclipse.jgit.lfs.server.fs.FileLfsRepository"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.eclipse.jgit.lfs.server.fs.FileLfsRepository","java.nio.file.Path"] }]
 },
 {
   "name":"org.eclipse.jgit.diff.DiffAlgorithm$SupportedAlgorithm",
