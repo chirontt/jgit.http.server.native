@@ -45,11 +45,11 @@ port number, path to the local git repos, and path to the local LFS storage as p
 	gradlew run
 	gradlew run --args="8080 /path/to/repos /path/to/lfs/storage"
 
-To generate native executable, run the `nativeImage` task:
+To generate native executable, run the `nativeCompile` task:
 
-	gradlew nativeImage
+	gradlew nativeCompile
 
-The `nativeImage` task would take a while to compile the source code and link into an executable file.
+The `nativeCompile` task would take a while to compile the source code and link into an executable file.
 The resulting `JGitHttpServer` file is in:
 
 	build/native-image/JGitHttpServer
