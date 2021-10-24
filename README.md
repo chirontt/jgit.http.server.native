@@ -12,13 +12,16 @@ for the
 in the form of a
 [servlet](https://git.eclipse.org/c/jgit/jgit.git/tree/org.eclipse.jgit.http.server/src/org/eclipse/jgit/http/server/GitServlet.java).
 
-For [LFS](https://github.com/git-lfs/git-lfs/tree/main/docs/api) server support, JGit provides
+For [LFS](https://github.com/git-lfs/git-lfs/tree/main/docs/api) server support, JGit provides the
 [LFS server project](https://git.eclipse.org/c/jgit/jgit.git/tree/org.eclipse.jgit.lfs.server)
 which implements 2 servlets: the
 [Batch API servlet](https://git.eclipse.org/c/jgit/jgit.git/tree/org.eclipse.jgit.lfs.server/src/org/eclipse/jgit/lfs/server/LfsProtocolServlet.java),
 and the
 [LFS servlet](https://git.eclipse.org/c/jgit/jgit.git/tree/org.eclipse.jgit.lfs.server/src/org/eclipse/jgit/lfs/server/fs/FileLfsServlet.java)
 which supports upload/download of large objects to a separate storage in the local file system.
+In addition, this project implements a
+[servlet](src/main/java/com/github/chirontt/lfs/server/locks/LfsFileLockingProtocolServlet.java)
+to support the [LFS File Locking API](https://github.com/git-lfs/git-lfs/blob/main/docs/api/locking.md).
 
 This project aims to produce stand-alone, platform-specific, native executable `JGitHttpServer` of the
 JGit HTTP servlet with LFS support, using embedded [Jetty](https://github.com/eclipse/jetty.project)
