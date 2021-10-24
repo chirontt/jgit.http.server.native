@@ -12,6 +12,7 @@
     {"pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"}
   ]},
   "bundles":[
+    {"name":"com.github.chirontt.lfs.server.locks.internal.LfsFileLockingText"}, 
     {"name":"javax.servlet.LocalStrings"}, 
     {"name":"javax.servlet.http.LocalStrings"}, 
     {"name":"org.eclipse.jgit.gitrepo.internal.RepoText"}, 

@@ -1,3 +1,13 @@
+/*
+ * Copyright (C) 2015, Sasa Zivkov <sasa.zivkov@sap.com> and others
+ * Copyright (C) 2021, Tue Ton <chirontt@gmail.com>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Distribution License v. 1.0 which is available at
+ * https://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 package com.github.chirontt.lfs.server;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -18,7 +28,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -41,6 +53,12 @@ import org.eclipse.jgit.lfs.server.internal.LfsGson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * LFS protocol handler implementing the LFS batch API v2.4 [1]
+ *
+ * [1] https://github.com/git-lfs/git-lfs/blob/main/docs/api/batch.md
+ *
+ */
 public abstract class LfsProtocolServletV2 extends LfsProtocolServlet {
 
     private static final long serialVersionUID = 1L;
@@ -51,12 +69,18 @@ public abstract class LfsProtocolServletV2 extends LfsProtocolServlet {
         throw new LfsException("not supported");
 	}
     
-    protected abstract LargeFileRepository getLargeFileRepository(LfsRequestV2 lfsRequest, String path, String auth, boolean authenticated)
+    protected abstract LargeFileRepository getLargeFileRepository(LfsRequestV2 lfsRequest, String path, String auth)
             throws LfsException;
 
+    protected abstract RepositoryAccessor getRepositoryAccessor(String path)
+            throws LfsException;
+
+    /**
+     * LFS request (LFS Batch API v2.4)
+     */
     protected static class LfsRequestV2 extends LfsRequest {
-        //optional object describing the server ref that the objects belong to;
-        //to support Git server authentication schemes that take the refspec into account.
+        //optional object describing the server ref that the objects belong to
+        //(to support Git server authentication schemes that take the refspec into account.)
         LfsRef ref;
         //optional identifiers for transfer adapters that the client has configured.
         //If omitted, the basic transfer adapter MUST be assumed by the server.
@@ -71,11 +95,34 @@ public abstract class LfsProtocolServletV2 extends LfsProtocolServlet {
         }
     }
 
+    protected void checkAccessToMainRepository(LfsRequestV2 lfsRequest, String path, String username)
+            throws LfsException {
+        //check if the transfer property contains "basic"
+        //as this LFS server only supports "basic" transfer
+        List<String> transfers = lfsRequest.getTransfers();
+        if (transfers != null && !transfers.contains("basic")) {
+            throw new LfsValidationError("Missing 'basic' in transfer property: " + transfers);
+        }
+
+        RepositoryAccessor repoAccessor = getRepositoryAccessor(path);
+        if (repoAccessor == null) {
+            return;
+        }
+
+        LfsRef ref = lfsRequest.getRef();
+        String refName = ref == null ? null : ref.getName();
+        if (lfsRequest.isDownload()) {
+            repoAccessor.checkReadAccess(refName, username);
+        } else if (lfsRequest.isUpload()) {
+            repoAccessor.checkWriteAccess(refName, username);
+        }
+    }
+
 	private static final Logger LOG = LoggerFactory
 			.getLogger(LfsProtocolServletV2.class);
 
-	private static final String CONTENTTYPE_VND_GIT_LFS_JSON =
-			"application/vnd.git-lfs+json"; //$NON-NLS-1$
+	public static final String CONTENTTYPE_VND_GIT_LFS_JSON =
+			"application/vnd.git-lfs+json; charset=utf-8"; //$NON-NLS-1$
 
 	private static final int SC_RATE_LIMIT_EXCEEDED = 429;
 
@@ -92,12 +139,14 @@ public abstract class LfsProtocolServletV2 extends LfsProtocolServlet {
 				new InputStreamReader(req.getInputStream(), UTF_8));
 		LfsRequestV2 request = LfsGson.fromJson(r, LfsRequestV2.class);
 		String path = req.getPathInfo();
+		LOG.debug("pathInfo=" + path);
+		String auth = req.getHeader(HDR_AUTHORIZATION);
 
 		res.setContentType(CONTENTTYPE_VND_GIT_LFS_JSON);
 		LargeFileRepository repo = null;
 		try {
-			repo = getLargeFileRepository(request, path,
-					req.getHeader(HDR_AUTHORIZATION), req.getRemoteUser() == null ? false : true);
+		    checkAccessToMainRepository(request, path, getUsername(req));
+			repo = getLargeFileRepository(request, path, auth);
 			if (repo == null) {
 				String error = MessageFormat
 						.format(LfsText.get().lfsFailedToGetRepository, path);
@@ -136,4 +185,29 @@ public abstract class LfsProtocolServletV2 extends LfsProtocolServlet {
 		rsp.setStatus(status);
 		LfsGson.toJson(message, writer);
 	}
+
+    private String getUsername(HttpServletRequest req) throws LfsException {
+        String username = req.getRemoteUser();
+        if (username == null) {
+            username = retrieveUserName(req.getHeader(HDR_AUTHORIZATION));
+        }
+        return username;
+    }
+
+    private String retrieveUserName(String auth) throws LfsException {
+        if (auth == null || auth.isEmpty()) return null;
+
+        String[] authScheme = auth.trim().split(" ");
+        if (!"Basic".equalsIgnoreCase(authScheme[0])) {
+            throw new LfsException("Only 'Basic' authentication is allowed, not " + authScheme[0]);
+        }
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(authScheme[1].getBytes(StandardCharsets.UTF_8));
+            String decodedString = new String(decodedBytes);
+            return decodedString.split(":")[0];
+        } catch (Exception e) {
+            throw new LfsException("Not in valid Base64 scheme: " + authScheme[1]);
+        }
+    }
+
 }

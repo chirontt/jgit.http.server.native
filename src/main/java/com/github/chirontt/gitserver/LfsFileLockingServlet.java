@@ -12,32 +12,31 @@ package com.github.chirontt.gitserver;
 import java.nio.file.Path;
 
 import org.eclipse.jgit.lfs.errors.LfsException;
-import org.eclipse.jgit.lfs.server.LargeFileRepository;
-import org.eclipse.jgit.lfs.server.fs.FileLfsRepository;
 
-import com.github.chirontt.lfs.server.LfsProtocolServletV2;
 import com.github.chirontt.lfs.server.RepositoryAccessor;
+import com.github.chirontt.lfs.server.locks.LfsFileLockingProtocolServlet;
+import com.github.chirontt.lfs.server.locks.LockManager;
 
 /**
- * LFS Batch API servlet, to allow separate storage of large objects
- * in the local file system on the server. 
+ * Simple LFS File Locking servlet where LFS locks are persisted
+ * to the file system.
+ *
  */
-public class LfsBatchServlet extends LfsProtocolServletV2 {
+public class LfsFileLockingServlet extends LfsFileLockingProtocolServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private FileLfsRepository lfsRepo;
+    private LockManager lockManager;
     private RepositoryAccessor repoAccessor;
 
-    public LfsBatchServlet(FileLfsRepository lfsRepo, Path repoPath) {
-        this.lfsRepo = lfsRepo;
+    public LfsFileLockingServlet(LockManager lockManager, Path repoPath) {
+        this.lockManager = lockManager;
         this.repoAccessor = new LfsRepositoryAccessor(repoPath);
-    }
+	}
 
     @Override
-    protected LargeFileRepository getLargeFileRepository(LfsRequestV2 lfsRequest, String path, String auth)
-            throws LfsException {
-        return lfsRepo;
+    protected LockManager getLockManager() throws LfsException {
+        return lockManager;
     }
 
     @Override

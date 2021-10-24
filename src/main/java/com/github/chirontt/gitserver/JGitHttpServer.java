@@ -1,3 +1,12 @@
+/*
+ * Copyright (C) 2021, Tue Ton <chirontt@gmail.com>
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Distribution License v. 1.0 which is available at
+ * https://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 package com.github.chirontt.gitserver;
 
 import java.io.BufferedReader;
@@ -26,6 +35,8 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.chirontt.lfs.server.locks.impl.FileLfsLockManager;
+
 /**
  * Server to handle access to git repositories over HTTP, with LFS support.
  * This server uses Jetty as the embedded servlet container
@@ -34,9 +45,11 @@ import org.slf4j.LoggerFactory;
 public class JGitHttpServer {
     private static final Logger LOG = LoggerFactory.getLogger(JGitHttpServer.class);
 
+    private static final String LFS_PATH = "/info/lfs/";
     private static final String OBJECTS = "objects/";
-    private static final String STORE_PATH = "/info/lfs/" + OBJECTS + "*";
-    private static final String BATCH_API_PATH = "/info/lfs/" + OBJECTS + "batch";
+    private static final String FILE_LOCKING_API_PATH = LFS_PATH + "locks/*";
+    private static final String STORE_PATH = LFS_PATH + OBJECTS + "*";
+    private static final String BATCH_API_PATH = LFS_PATH + OBJECTS + "batch";
 
     //default parameter values
     static int serverPort = 8080;
@@ -139,20 +152,24 @@ public class JGitHttpServer {
 
     private static void setUpLfsServlets(List<Path> repos, ServletContextHandler context) {
         URI baseURI = getBaseURI();
-        repos.forEach( path -> {
-            String repoName = path.getFileName().toString();
+        repos.forEach( repoPath -> {
+            String repoName = repoPath.getFileName().toString();
             if (!repoName.endsWith(".git")) {
                 repoName = repoName + ".git";
             }
             try {
+                //set up the LFS file locking servlet for this repo
+                FileLfsLockManager lockManager = new FileLfsLockManager(Paths.get(lfsPath, repoName), repoPath);
+                context.addServlet(new ServletHolder(new LfsFileLockingServlet(lockManager, repoPath)),
+                                   "/" + repoName + FILE_LOCKING_API_PATH);
                 //set up the LFS batch servlet for this repo
                 FileLfsRepository fsRepo = new FileLfsRepository(
-                        baseURI + "/" + repoName + "/info/lfs/" + OBJECTS, Paths.get(lfsPath, repoName));
-                context.addServlet(new ServletHolder(new LfsBatchServlet(fsRepo, path)),
+                        baseURI + "/" + repoName + LFS_PATH + OBJECTS, Paths.get(lfsPath, repoName));
+                context.addServlet(new ServletHolder(new LfsBatchServlet(fsRepo, repoPath)),
                                    "/" + repoName + BATCH_API_PATH);
                 //set up the LFS content servlet for this repo
-                //with timeout of 5 minutes for object upload/download
-                FileLfsServlet lfsContentServlet = new FileLfsServlet(fsRepo, 300000);
+                //with timeout of 60 minutes for object upload/download
+                FileLfsServlet lfsContentServlet = new FileLfsServlet(fsRepo, 3600000);
                 context.addServlet(new ServletHolder(lfsContentServlet),
                                    "/" + repoName + STORE_PATH);
             } catch (IOException e) {
