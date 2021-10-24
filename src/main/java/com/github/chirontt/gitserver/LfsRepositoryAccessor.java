@@ -37,10 +37,10 @@ import com.github.chirontt.lfs.server.RepositoryAccessor;
  */
 public class LfsRepositoryAccessor implements RepositoryAccessor {
 
-	private Path repoPath;
+    private Path repoPath;
     private FileRepositoryBuilder repositoryBuilder;
 
-	public LfsRepositoryAccessor(Path repoPath) {
+    public LfsRepositoryAccessor(Path repoPath) {
         this.repoPath = repoPath;
         this.repositoryBuilder =
                 new FileRepositoryBuilder().setGitDir(repoPath.toFile())
@@ -48,7 +48,7 @@ public class LfsRepositoryAccessor implements RepositoryAccessor {
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void checkReadAccess(String refName, String username)
             throws LfsException {
         //check that the repository is readable
@@ -63,7 +63,7 @@ public class LfsRepositoryAccessor implements RepositoryAccessor {
 	}
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void checkWriteAccess(String refName, String username)
             throws LfsException {
         //first, check that the repository is writable
@@ -71,7 +71,7 @@ public class LfsRepositoryAccessor implements RepositoryAccessor {
         if (username == null) {
             //the user is not authenticated;
             //check if the repository allows upload
-        	//i.e. having http.receivepack=true setting
+            //i.e. having http.receivepack=true setting
             try {
                 if (!getRepoConfigBooleanValue("http", "receivepack", false)) {
                     throw new LfsRepositoryReadOnly(repoPath.getFileName().toString());

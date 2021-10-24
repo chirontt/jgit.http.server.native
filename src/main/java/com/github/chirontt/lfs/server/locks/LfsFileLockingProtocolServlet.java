@@ -69,8 +69,8 @@ public abstract class LfsFileLockingProtocolServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(LfsFileLockingProtocolServlet.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(LfsFileLockingProtocolServlet.class);
 
     protected abstract LockManager getLockManager() throws LfsException;
 
@@ -127,7 +127,7 @@ public abstract class LfsFileLockingProtocolServlet extends HttpServlet {
             LockManager lockManager = getLockManager();
             if (lockManager == null) {
                 throw new LfsUnavailable(LfsFileLockingText.get().fileLockingServiceUnavailable);
-			}
+            }
             LOG.debug(String.format("Retrieving locks, with path=%1$s, id=%2$s, cursor=%3$s, limit=%4$d, refspec=%5$s",
                                     path, id, cursor, limit, refspec));
             LfsFileLockingResponse.Locks locks =
@@ -140,9 +140,9 @@ public abstract class LfsFileLockingProtocolServlet extends HttpServlet {
             sendError(resp, w, SC_NOT_FOUND, e.getMessage());
         } catch (LfsException e) {
             sendError(resp, w, SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} finally {
-			w.flush();
-		}
+        } finally {
+            w.flush();
+        }
     }
 
     /** {@inheritDoc} */
@@ -170,7 +170,7 @@ public abstract class LfsFileLockingProtocolServlet extends HttpServlet {
                 LockManager lockManager = getLockManager();
                 if (lockManager == null) {
                     throw new LfsUnavailable(LfsFileLockingText.get().fileLockingServiceUnavailable);
-    			}
+                }
                 LOG.debug(String.format("Creating lock, with path=%1$s, refspec=%2$s, username=%3$s",
                         createLock.getPath(), refName, username));
                 CreatedOrDeletedLock lockCreated = 
@@ -186,7 +186,7 @@ public abstract class LfsFileLockingProtocolServlet extends HttpServlet {
                 LockManager lockManager = getLockManager();
                 if (lockManager == null) {
                     throw new LfsUnavailable(LfsFileLockingText.get().fileLockingServiceUnavailable);
-    			}
+                }
                 LOG.debug(String.format("Retrieving locks for verification, with cursor=%1$s, limit=%2$d, refspec=%3$s, username=%4$s",
                         listLocksToVerify.getCursor(), listLocksToVerify.getLimit(), refName, username));
                 LocksToVerify locksToVerify = lockManager.listLocksToVerify(refName, username,
@@ -211,7 +211,7 @@ public abstract class LfsFileLockingProtocolServlet extends HttpServlet {
                 LockManager lockManager = getLockManager();
                 if (lockManager == null) {
                     throw new LfsUnavailable(LfsFileLockingText.get().fileLockingServiceUnavailable);
-    			}
+                }
                 boolean isAdministrator = lockManager.isLockAdministrator(username);
                 LOG.debug(String.format("Deleting lock, with id=%1$s, ref=%2$s, username=%3$s, force=%4$b",
                         lockId, refName, username, deleteLock.isForce() && isAdministrator));
@@ -230,9 +230,9 @@ public abstract class LfsFileLockingProtocolServlet extends HttpServlet {
             LfsGson.toJson(error, w);
         } catch (LfsException e) {
             sendError(resp, w, SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} finally {
-			w.flush();
-		}
+        } finally {
+            w.flush();
+        }
     }
 
     private String getQueryParameterValue(Map<String, String[]> params, String key) {
@@ -249,7 +249,7 @@ public abstract class LfsFileLockingProtocolServlet extends HttpServlet {
         resp.setStatus(status);
         Error error = new Error(message);
         LfsGson.toJson(error, writer);
-	}
+    }
 
     private String getHeaders(HttpServletRequest req) {
         StringBuilder builder = new StringBuilder();

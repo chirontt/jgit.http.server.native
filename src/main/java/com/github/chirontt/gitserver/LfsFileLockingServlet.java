@@ -32,7 +32,7 @@ public class LfsFileLockingServlet extends LfsFileLockingProtocolServlet {
     public LfsFileLockingServlet(LockManager lockManager, Path repoPath) {
         this.lockManager = lockManager;
         this.repoAccessor = new LfsRepositoryAccessor(repoPath);
-	}
+    }
 
     @Override
     protected LockManager getLockManager() throws LfsException {

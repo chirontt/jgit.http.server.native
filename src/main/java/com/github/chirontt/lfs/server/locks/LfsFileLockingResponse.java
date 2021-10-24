@@ -20,7 +20,7 @@ import java.util.List;
  */
 public interface LfsFileLockingResponse {
 
-	/** Describes the owner of a LFS lock */
+    /** Describes the owner of a LFS lock */
     class Owner {
         String name; //from the user credentials posted when creating the lock
 
@@ -63,21 +63,21 @@ public interface LfsFileLockingResponse {
             return owner;
         }
 
-		public void setId(String id) {
-			this.id = id;
-		}
+        public void setId(String id) {
+            this.id = id;
+        }
 
-		public void setPath(String path) {
-			this.path = path;
-		}
+        public void setPath(String path) {
+            this.path = path;
+        }
 
-		public void setLockedAt(String lockedAt) {
-			this.lockedAt = lockedAt;
-		}
+        public void setLockedAt(String lockedAt) {
+            this.lockedAt = lockedAt;
+        }
 
-		public void setOwner(Owner owner) {
-			this.owner = owner;
-		}
+        public void setOwner(Owner owner) {
+            this.owner = owner;
+        }
     }
 
     /** Describes the LFS lock which was created or deleted */
@@ -141,17 +141,17 @@ public interface LfsFileLockingResponse {
             return nextCursor;
         }
 
-		public void setOurs(List<Lock> ours) {
-			this.ours = ours;
-		}
+        public void setOurs(List<Lock> ours) {
+            this.ours = ours;
+        }
 
-		public void setTheirs(List<Lock> theirs) {
-			this.theirs = theirs;
-		}
+        public void setTheirs(List<Lock> theirs) {
+            this.theirs = theirs;
+        }
 
-		public void setNextCursor(String nextCursor) {
-			this.nextCursor = nextCursor;
-		}
+        public void setNextCursor(String nextCursor) {
+            this.nextCursor = nextCursor;
+        }
     }
 
     /** Describes an error to be returned by the LFS file locking API */

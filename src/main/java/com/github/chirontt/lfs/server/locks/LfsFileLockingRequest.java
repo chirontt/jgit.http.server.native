@@ -29,7 +29,7 @@ public interface LfsFileLockingRequest {
         //path name of the file that is locked;
         //should be relative to the root of the repository working directory
         String path;
-	    //optional object describing the server ref that the locks belong to
+        //optional object describing the server ref that the locks belong to
         LfsRef ref;
 
         public String getPath() {
@@ -68,15 +68,15 @@ public interface LfsFileLockingRequest {
 
         public String getCursor() {
             return cursor;
-		}
+        }
 
         public int getLimit() {
             return limit;
-		}
+        }
 
         public LfsRef getRef() {
             return ref;
-		}
+        }
     }
 
 }

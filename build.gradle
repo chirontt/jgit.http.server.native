@@ -1,9 +1,9 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.5'
+    id 'org.graalvm.buildtools.native' version '0.9.6'
 }
 
-wrapper {
+tasks.wrapper {
     gradleVersion = '7.2'
     distributionType = Wrapper.DistributionType.ALL
 }

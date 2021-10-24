@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-package com.github.chirontt.lfs.server.locks.impl;
+package com.github.chirontt.lfs.server.locks.lm;
 
 import com.github.chirontt.lfs.server.LfsRef;
 import com.github.chirontt.lfs.server.locks.LfsFileLockingResponse.Lock;

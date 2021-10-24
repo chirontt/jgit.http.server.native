@@ -35,7 +35,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.chirontt.lfs.server.locks.impl.FileLfsLockManager;
+import com.github.chirontt.lfs.server.locks.lm.FileLfsLockManager;
 
 /**
  * Server to handle access to git repositories over HTTP, with LFS support.

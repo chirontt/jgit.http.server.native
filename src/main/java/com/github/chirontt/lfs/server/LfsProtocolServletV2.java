@@ -67,7 +67,7 @@ public abstract class LfsProtocolServletV2 extends LfsProtocolServlet {
     protected LargeFileRepository getLargeFileRepository(LfsRequest request, String path, String auth)
             throws LfsException {
         throw new LfsException("not supported");
-	}
+    }
     
     protected abstract LargeFileRepository getLargeFileRepository(LfsRequestV2 lfsRequest, String path, String auth)
             throws LfsException;
@@ -118,72 +118,72 @@ public abstract class LfsProtocolServletV2 extends LfsProtocolServlet {
         }
     }
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(LfsProtocolServletV2.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(LfsProtocolServletV2.class);
 
-	public static final String CONTENTTYPE_VND_GIT_LFS_JSON =
-			"application/vnd.git-lfs+json; charset=utf-8"; //$NON-NLS-1$
+    public static final String CONTENTTYPE_VND_GIT_LFS_JSON =
+            "application/vnd.git-lfs+json; charset=utf-8"; //$NON-NLS-1$
 
-	private static final int SC_RATE_LIMIT_EXCEEDED = 429;
+    private static final int SC_RATE_LIMIT_EXCEEDED = 429;
 
-	private static final int SC_BANDWIDTH_LIMIT_EXCEEDED = 509;
+    private static final int SC_BANDWIDTH_LIMIT_EXCEEDED = 509;
 
-	/** {@inheritDoc} */
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse res)
-			throws ServletException, IOException {
-		Writer w = new BufferedWriter(
-				new OutputStreamWriter(res.getOutputStream(), UTF_8));
+    /** {@inheritDoc} */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        Writer w = new BufferedWriter(
+                new OutputStreamWriter(res.getOutputStream(), UTF_8));
 
-		Reader r = new BufferedReader(
-				new InputStreamReader(req.getInputStream(), UTF_8));
-		LfsRequestV2 request = LfsGson.fromJson(r, LfsRequestV2.class);
-		String path = req.getPathInfo();
-		LOG.debug("pathInfo=" + path);
-		String auth = req.getHeader(HDR_AUTHORIZATION);
+        Reader r = new BufferedReader(
+                new InputStreamReader(req.getInputStream(), UTF_8));
+        LfsRequestV2 request = LfsGson.fromJson(r, LfsRequestV2.class);
+        String path = req.getPathInfo();
+        LOG.debug("pathInfo=" + path);
+        String auth = req.getHeader(HDR_AUTHORIZATION);
 
-		res.setContentType(CONTENTTYPE_VND_GIT_LFS_JSON);
-		LargeFileRepository repo = null;
-		try {
-		    checkAccessToMainRepository(request, path, getUsername(req));
-			repo = getLargeFileRepository(request, path, auth);
-			if (repo == null) {
-				String error = MessageFormat
-						.format(LfsText.get().lfsFailedToGetRepository, path);
-				LOG.error(error);
-				throw new LfsException(error);
-			}
-			res.setStatus(SC_OK);
-			TransferHandler handler = TransferHandler
-					.forOperation(request.getOperation(), repo, request.getObjects());
-			LfsGson.toJson(handler.process(), w);
-		} catch (LfsValidationError e) {
-			sendError(res, w, SC_UNPROCESSABLE_ENTITY, e.getMessage());
-		} catch (LfsRepositoryNotFound e) {
-			sendError(res, w, SC_NOT_FOUND, e.getMessage());
-		} catch (LfsRepositoryReadOnly e) {
-			sendError(res, w, SC_FORBIDDEN, e.getMessage());
-		} catch (LfsRateLimitExceeded e) {
-			sendError(res, w, SC_RATE_LIMIT_EXCEEDED, e.getMessage());
-		} catch (LfsBandwidthLimitExceeded e) {
-			sendError(res, w, SC_BANDWIDTH_LIMIT_EXCEEDED, e.getMessage());
-		} catch (LfsInsufficientStorage e) {
-			sendError(res, w, SC_INSUFFICIENT_STORAGE, e.getMessage());
-		} catch (LfsUnavailable e) {
-			sendError(res, w, SC_SERVICE_UNAVAILABLE, e.getMessage());
-		} catch (LfsUnauthorized e) {
-			sendError(res, w, SC_UNAUTHORIZED, e.getMessage());
-		} catch (LfsException e) {
-			sendError(res, w, SC_INTERNAL_SERVER_ERROR, e.getMessage());
-		} finally {
-			w.flush();
-		}
-	}
+        res.setContentType(CONTENTTYPE_VND_GIT_LFS_JSON);
+        LargeFileRepository repo = null;
+        try {
+            checkAccessToMainRepository(request, path, getUsername(req));
+            repo = getLargeFileRepository(request, path, auth);
+            if (repo == null) {
+                String error = MessageFormat
+                        .format(LfsText.get().lfsFailedToGetRepository, path);
+                LOG.error(error);
+                throw new LfsException(error);
+            }
+            res.setStatus(SC_OK);
+            TransferHandler handler = TransferHandler
+                    .forOperation(request.getOperation(), repo, request.getObjects());
+            LfsGson.toJson(handler.process(), w);
+        } catch (LfsValidationError e) {
+            sendError(res, w, SC_UNPROCESSABLE_ENTITY, e.getMessage());
+        } catch (LfsRepositoryNotFound e) {
+            sendError(res, w, SC_NOT_FOUND, e.getMessage());
+        } catch (LfsRepositoryReadOnly e) {
+            sendError(res, w, SC_FORBIDDEN, e.getMessage());
+        } catch (LfsRateLimitExceeded e) {
+            sendError(res, w, SC_RATE_LIMIT_EXCEEDED, e.getMessage());
+        } catch (LfsBandwidthLimitExceeded e) {
+            sendError(res, w, SC_BANDWIDTH_LIMIT_EXCEEDED, e.getMessage());
+        } catch (LfsInsufficientStorage e) {
+            sendError(res, w, SC_INSUFFICIENT_STORAGE, e.getMessage());
+        } catch (LfsUnavailable e) {
+            sendError(res, w, SC_SERVICE_UNAVAILABLE, e.getMessage());
+        } catch (LfsUnauthorized e) {
+            sendError(res, w, SC_UNAUTHORIZED, e.getMessage());
+        } catch (LfsException e) {
+            sendError(res, w, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            w.flush();
+        }
+    }
 
-	private void sendError(HttpServletResponse rsp, Writer writer, int status,
-			String message) {
-		rsp.setStatus(status);
-		LfsGson.toJson(message, writer);
+    private void sendError(HttpServletResponse rsp, Writer writer, int status,
+            String message) {
+        rsp.setStatus(status);
+        LfsGson.toJson(message, writer);
 	}
 
     private String getUsername(HttpServletRequest req) throws LfsException {

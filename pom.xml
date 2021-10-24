@@ -17,7 +17,7 @@
         <jgit.release.version>5.13.0.202109080827-r</jgit.release.version>
         <jetty.version>9.4.43.v20210629</jetty.version>
         <slf4j.version>1.7.32</slf4j.version>
-        <native.maven.plugin.version>0.9.5</native.maven.plugin.version>
+        <native.maven.plugin.version>0.9.6</native.maven.plugin.version>
         <native.image.dir.name>native-image</native.image.dir.name>
         <!-- main class name for exec:exec plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
