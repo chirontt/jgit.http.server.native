@@ -86,7 +86,7 @@
   ]
 },
 {
-  "name":"com.github.chirontt.lfs.server.locks.impl.PersistentLock",
+  "name":"com.github.chirontt.lfs.server.locks.lm.PersistentLock",
   "allDeclaredFields":true,
   "allDeclaredMethods":true
 },

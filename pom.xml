@@ -17,7 +17,7 @@
         <jgit.release.version>5.13.0.202109080827-r</jgit.release.version>
         <jetty.version>9.4.43.v20210629</jetty.version>
         <slf4j.version>1.7.32</slf4j.version>
-        <native.maven.plugin.version>0.9.6</native.maven.plugin.version>
+        <native.maven.plugin.version>0.9.7.1</native.maven.plugin.version>
         <native.image.dir.name>native-image</native.image.dir.name>
         <!-- main class name for exec:exec plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
@@ -153,6 +153,7 @@
                         <buildArg>--initialize-at-run-time=${run.time.init}</buildArg>
                         <buildArg>--native-image-info</buildArg>
                         <buildArg>--verbose</buildArg>
+                        <buildArg>--allow-incomplete-classpath</buildArg>
                         <!-- buildArg>-H:+TraceNativeToolUsage</buildArg -->
                         <buildArg>-H:TempDirectory=${project.build.directory}/tmp/${native.image.dir.name}</buildArg>
                         <buildArg>-H:Path=${project.build.directory}/${native.image.dir.name}</buildArg>
@@ -190,6 +191,8 @@
                                 <include name="*.txt"/>
                             </fileset>
                         </move>
+                        <move file="${project.build.directory}/${native.image.dir.name}/reports"
+                              tofile="${project.build.directory}/tmp/${native.image.dir.name}/reports"/>
                     </target>
                 </configuration>
             </plugin>

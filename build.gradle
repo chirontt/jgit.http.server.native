@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.6'
+    id 'org.graalvm.buildtools.native' version '0.9.7.1'
 }
 
 tasks.wrapper {
@@ -72,9 +72,12 @@ task removeUnneededDllFiles {
         ant.move(todir: "$buildDir/tmp/$nativeImageDirName") {
             fileset(dir: "$buildDir/$nativeImageDirName") {
                 include name: '*.dll'
+                include name: '*.pdb'
                 include name: '*.txt'
             }
         }
+        ant.move(file: "$buildDir/$nativeImageDirName/sources",
+                 tofile: "$buildDir/tmp/$nativeImageDirName/sources")
     }
 }
 
@@ -129,6 +132,7 @@ graalvmNative {
             buildArgs.add('--enable-url-protocols=http,https')
             buildArgs.add('--initialize-at-build-time=' + buildTimeInitClasses.join(','))
             buildArgs.add('--initialize-at-run-time=' + runTimeInitClasses.join(','))
+            buildArgs.add('--allow-incomplete-classpath')
             buildArgs.add("-H:Path=$buildDir/$nativeImageDirName")
             buildArgs.add("-H:TempDirectory=$buildDir/tmp/$nativeImageDirName")
 
