@@ -1,22 +1,22 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.7.1'
+    id 'org.graalvm.buildtools.native' version '0.9.8'
 }
 
 tasks.wrapper {
-    gradleVersion = '7.2'
+    gradleVersion = '7.3.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
-version = '5.13.0'
+version = '6.0.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '5.13.0.202109080827-r'
-    jettyVersion = '9.4.43.v20210629'
-    slf4jVersion = '1.7.32'
+    jgitReleaseVersion = '6.0.0.202111291000-r'
+    jettyVersion = '10.0.7'
+    slf4jVersion = '2.0.0-alpha5'
     nativeImageDirName = 'native-image'
 }
 
@@ -76,8 +76,14 @@ task removeUnneededDllFiles {
                 include name: '*.txt'
             }
         }
-        ant.move(file: "$buildDir/$nativeImageDirName/sources",
-                 tofile: "$buildDir/tmp/$nativeImageDirName/sources")
+        if (file("$buildDir/$nativeImageDirName/reports").exists()) {
+            ant.move(file: "$buildDir/$nativeImageDirName/reports",
+                     tofile: "$buildDir/tmp/$nativeImageDirName/reports")
+        }
+        if (file("$buildDir/$nativeImageDirName/sources").exists()) {
+            ant.move(file: "$buildDir/$nativeImageDirName/sources",
+                     tofile: "$buildDir/tmp/$nativeImageDirName/sources")
+        }
     }
 }
 
@@ -92,6 +98,7 @@ task uberJar(type: Jar) {
             'Built-By': System.getProperty('user.name'),
             'Created-By': System.getProperty('java.runtime.version') + ' (' + System.getProperty('java.vendor') + ')',
             'Gradle-Version': 'Gradle ' + gradle.getGradleVersion(),
+            'Multi-Release': 'true',
         )
     }
 
