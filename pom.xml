@@ -11,13 +11,12 @@
     <description>JGit HTTP server's native executable built by GraalVM</description>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jgit.release.version>6.0.0.202111291000-r</jgit.release.version>
         <jetty.version>10.0.7</jetty.version>
-        <slf4j.version>2.0.0-alpha5</slf4j.version>
-        <native.maven.plugin.version>0.9.8</native.maven.plugin.version>
+        <slf4j.version>2.0.0-alpha6</slf4j.version>
+        <native.maven.plugin.version>0.9.9</native.maven.plugin.version>
         <native.image.dir.name>native-image</native.image.dir.name>
         <!-- main class name for exec:exec plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
@@ -60,6 +59,11 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.9.0</version>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -186,14 +190,16 @@
                 </executions>
                 <configuration>
                     <target>
-                        <move todir="${project.build.directory}/tmp/${native.image.dir.name}">
+                        <move todir="${project.build.directory}/tmp/${native.image.dir.name}"
+                              failonerror="false" quiet="true">
                             <fileset dir="${project.build.directory}/${native.image.dir.name}">
                                 <include name="*.dll"/>
                                 <include name="*.txt"/>
                             </fileset>
                         </move>
                         <move file="${project.build.directory}/${native.image.dir.name}/reports"
-                              tofile="${project.build.directory}/tmp/${native.image.dir.name}/reports"/>
+                              tofile="${project.build.directory}/tmp/${native.image.dir.name}/reports"
+                              failonerror="false" quiet="true"/>
                     </target>
                 </configuration>
             </plugin>
