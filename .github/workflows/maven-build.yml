@@ -1,0 +1,56 @@
+name: Maven native image build
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }} with Java ${{ matrix.java-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java-version: [11, 17]
+        graalvm-version: ['22.0.0.2']
+      fail-fast: false
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Set up GraalVM ${{ matrix.graalvm-version }} for Java ${{ matrix.java-version }}
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: ${{ matrix.graalvm-version }}
+          java-version: ${{ matrix.java-version }}
+          components: 'native-image'
+
+      - name: Report Java version
+        run: |
+          java -version
+          javac -version
+
+      - name: Build with Maven Wrapper (Linux)
+        run: ./mvnw -B package
+        if: runner.os == 'Linux'
+
+      - name: Build with Maven Wrapper (Windows)
+        run: .\mvnw.cmd -B package
+        if: runner.os == 'Windows'
+
+      - name: Package Linux artifact
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v2
+        with:
+          name: JGitHttpServer ${{ runner.os }} native image with SubstrateVM for Java ${{ matrix.java-version }}
+          path: target/native-image/JGitHttpServer
+
+      - name: Package Windows artifacts
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: JGitHttpServer ${{ runner.os }} native image with SubstrateVM for Java ${{ matrix.java-version }}
+          path: target/native-image/JGitHttpServer.exe
+

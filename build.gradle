@@ -1,22 +1,22 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.9'
+    id 'org.graalvm.buildtools.native' version '0.9.10'
 }
 
 tasks.wrapper {
-    gradleVersion = '7.3.3'
+    gradleVersion = '7.4.2'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
-version = '6.0.0'
+version = '6.1.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '6.0.0.202111291000-r'
-    jettyVersion = '10.0.7'
-    slf4jVersion = '2.0.0-alpha6'
+    jgitReleaseVersion = '6.1.0.202203080745-r'
+    jettyVersion = '10.0.8'
+    slf4jVersion = '2.0.0-alpha7'
     nativeImageDirName = 'native-image'
 }
 
@@ -154,6 +154,7 @@ tasks.named("nativeCompile") {
     //use the uber jar if long classpath becomes a problem in Windows:
     //dependsOn uberJar
     //classpathJar = uberJar.archiveFile
+
     finalizedBy removeUnneededDllFiles
 }
 

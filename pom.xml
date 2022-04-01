@@ -4,7 +4,7 @@
 
     <groupId>com.github.chirontt.jgit</groupId>
     <artifactId>jgit.http.server.native</artifactId>
-    <version>6.0.0</version>
+    <version>6.1.0</version>
     <packaging>jar</packaging>
 
     <name>JGitHttpServer</name> <!-- name of the resulting native executable -->
@@ -13,10 +13,10 @@
     <properties>
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jgit.release.version>6.0.0.202111291000-r</jgit.release.version>
-        <jetty.version>10.0.7</jetty.version>
-        <slf4j.version>2.0.0-alpha6</slf4j.version>
-        <native.maven.plugin.version>0.9.9</native.maven.plugin.version>
+        <jgit.release.version>6.1.0.202203080745-r</jgit.release.version>
+        <jetty.version>10.0.8</jetty.version>
+        <slf4j.version>2.0.0-alpha7</slf4j.version>
+        <native.maven.plugin.version>0.9.10</native.maven.plugin.version>
         <native.image.dir.name>native-image</native.image.dir.name>
         <!-- main class name for exec:exec plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
