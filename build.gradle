@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.10'
+    id 'org.graalvm.buildtools.native' version '0.9.11'
 }
 
 tasks.wrapper {
@@ -15,7 +15,7 @@ version = '6.1.0'
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
     jgitReleaseVersion = '6.1.0.202203080745-r'
-    jettyVersion = '10.0.8'
+    jettyVersion = '10.0.9'
     slf4jVersion = '2.0.0-alpha7'
     nativeImageDirName = 'native-image'
 }
@@ -141,11 +141,15 @@ graalvmNative {
             buildArgs.add('--enable-url-protocols=http,https')
             buildArgs.add('--initialize-at-build-time=' + buildTimeInitClasses.join(','))
             buildArgs.add('--initialize-at-run-time=' + runTimeInitClasses.join(','))
-            buildArgs.add('--allow-incomplete-classpath')
             buildArgs.add("-H:Path=$buildDir/$nativeImageDirName")
             buildArgs.add("-H:TempDirectory=$buildDir/tmp/$nativeImageDirName")
 
             useFatJar = false
+            if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+                //temp fix for the "Unsupported OptionOrigin" error in GraalVM 22.1.0 version in Windows
+                //(see https://github.com/oracle/graal/issues/4502)
+                useArgFile = false
+            }
         }
     }
 }
