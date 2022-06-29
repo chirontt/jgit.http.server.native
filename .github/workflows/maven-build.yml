@@ -2,6 +2,7 @@ name: Maven native image build
 
 on:
   push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 

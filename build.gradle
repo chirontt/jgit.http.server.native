@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.11'
+    id 'org.graalvm.buildtools.native' version '0.9.12'
 }
 
 tasks.wrapper {
@@ -10,12 +10,12 @@ tasks.wrapper {
 
 group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
-version = '6.1.0'
+version = '6.2.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '6.1.0.202203080745-r'
-    jettyVersion = '10.0.9'
+    jgitReleaseVersion = '6.2.0.202206071550-r'
+    jettyVersion = '10.0.11'
     slf4jVersion = '2.0.0-alpha7'
     nativeImageDirName = 'native-image'
 }
