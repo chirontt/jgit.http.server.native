@@ -14,12 +14,12 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         java-version: [11, 17]
-        graalvm-version: ['22.2.0']
+        graalvm-version: ['22.3.0']
       fail-fast: false
 
     steps:
       - name: Git checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up GraalVM ${{ matrix.graalvm-version }} for Java ${{ matrix.java-version }}
         uses: graalvm/setup-graalvm@v1
@@ -43,14 +43,14 @@ jobs:
 
       - name: Package Linux artifact
         if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: JGitHttpServer ${{ runner.os }} native image with SubstrateVM for Java ${{ matrix.java-version }}
           path: target/native-image/JGitHttpServer
 
       - name: Package Windows artifacts
         if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: JGitHttpServer ${{ runner.os }} native image with SubstrateVM for Java ${{ matrix.java-version }}
           path: target/native-image/JGitHttpServer.exe

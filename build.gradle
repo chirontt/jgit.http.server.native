@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.13'
+    id 'org.graalvm.buildtools.native' version '0.9.16'
 }
 
 tasks.wrapper {
@@ -15,8 +15,8 @@ version = '6.3.0'
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
     jgitReleaseVersion = '6.3.0.202209071007-r'
-    jettyVersion = '10.0.11'
-    slf4jVersion = '2.0.0'
+    jettyVersion = '10.0.12'
+    slf4jVersion = '2.0.3'
     nativeImageDirName = 'native-image'
 }
 
