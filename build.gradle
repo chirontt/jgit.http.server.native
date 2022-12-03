@@ -1,22 +1,22 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.16'
+    id 'org.graalvm.buildtools.native' version '0.9.18'
 }
 
 tasks.wrapper {
-    gradleVersion = '7.5.1'
+    gradleVersion = '7.6'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
-version = '6.3.0'
+version = '6.4.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '6.3.0.202209071007-r'
+    jgitReleaseVersion = '6.4.0.202211300538-r'
     jettyVersion = '10.0.12'
-    slf4jVersion = '2.0.3'
+    slf4jVersion = '2.0.5'
     nativeImageDirName = 'native-image'
 }
 
@@ -135,12 +135,21 @@ graalvmNative {
                 'org.eclipse.jgit.lib.internal.WorkQueue',
                 'org.eclipse.jgit.lib.RepositoryCache',
                 'org.eclipse.jgit.transport.HttpAuthMethod',
-                'org.eclipse.jgit.util.FileUtils',
+            ]
+
+            //packages/classes to be re-initialized at native image run time
+            def runTimeReInitClasses = [
+                //all org.eclipse.jgit classes are initialized at build time
+                //(specified above), but due to SecureRandom seeding
+                //in their static initialization blocks, some JGit classes need be
+                //re-initialized at native image run time:
+                'org.eclipse.jgit.util.FileUtils:rerun',
             ]
 
             buildArgs.add('--enable-url-protocols=http,https')
             buildArgs.add('--initialize-at-build-time=' + buildTimeInitClasses.join(','))
             buildArgs.add('--initialize-at-run-time=' + runTimeInitClasses.join(','))
+            buildArgs.add('-H:ClassInitialization=' + runTimeReInitClasses.join(','))
             buildArgs.add("-H:Path=$buildDir/$nativeImageDirName")
             buildArgs.add("-H:TempDirectory=$buildDir/tmp/$nativeImageDirName")
 
