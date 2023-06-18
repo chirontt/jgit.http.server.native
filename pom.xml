@@ -4,7 +4,7 @@
 
     <groupId>com.github.chirontt.jgit</groupId>
     <artifactId>jgit.http.server.native</artifactId>
-    <version>6.5.0</version>
+    <version>6.6.0</version>
     <packaging>jar</packaging>
 
     <name>JGitHttpServer</name> <!-- name of the resulting native executable -->
@@ -13,10 +13,10 @@
     <properties>
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jgit.release.version>6.5.0.202303070854-r</jgit.release.version>
-        <jetty.version>10.0.14</jetty.version>
+        <jgit.release.version>6.6.0.202305301015-r</jgit.release.version>
+        <jetty.version>10.0.15</jetty.version>
         <slf4j.version>2.0.7</slf4j.version>
-        <native.maven.plugin.version>0.9.20</native.maven.plugin.version>
+        <native.maven.plugin.version>0.9.23</native.maven.plugin.version>
         <native.image.dir.name>native-image</native.image.dir.name>
         <!-- main class name for exec:exec plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
@@ -74,12 +74,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.11.0</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -106,7 +106,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -192,7 +192,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>remove-unneeded-dll-files</id>
