@@ -1,10 +1,12 @@
 .classpath
 .gradle
 .idea
+.lock
 .project
 .settings
 .vscode
 # Ignore build output directories
 bin
 build
+dependency-reduced-pom.xml
 target

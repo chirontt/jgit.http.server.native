@@ -13,20 +13,19 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        java-version: [11, 17]
-        graalvm-version: ['22.3.1']
+        java-version: [17, 21]
+        graalvm-distribution: ['graalvm-community']
       fail-fast: false
 
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
 
-      - name: Set up GraalVM ${{ matrix.graalvm-version }} for Java ${{ matrix.java-version }}
+      - name: Set up GraalVM ${{ matrix.graalvm-distribution }} for Java ${{ matrix.java-version }}
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ matrix.graalvm-version }}
           java-version: ${{ matrix.java-version }}
-          components: 'native-image'
+          distribution: ${{ matrix.graalvm-distribution }}
 
       - name: Report Java version
         run: |
@@ -46,12 +45,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: JGitHttpServer ${{ runner.os }} native image with SubstrateVM for Java ${{ matrix.java-version }}
-          path: target/native-image/JGitHttpServer
+          path: target/JGitHttpServer
 
       - name: Package Windows artifacts
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v3
         with:
           name: JGitHttpServer ${{ runner.os }} native image with SubstrateVM for Java ${{ matrix.java-version }}
-          path: target/native-image/JGitHttpServer.exe
+          path: target/JGitHttpServer.exe
 

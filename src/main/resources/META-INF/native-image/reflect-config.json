@@ -208,6 +208,10 @@
   "methods":[{"name":"values","parameterTypes":[] }]
 },
 {
+  "name":"org.eclipse.jgit.lib.CoreConfig$TrustPackedRefsStat",
+  "methods":[{"name":"values","parameterTypes":[] }]
+},
+{
   "name":"org.eclipse.jgit.transport.http.apache.internal.HttpApacheText",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
