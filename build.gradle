@@ -1,22 +1,22 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.28'
+    id 'org.graalvm.buildtools.native' version '0.10.2'
 }
 
 tasks.wrapper {
-    gradleVersion = '8.4'
+    gradleVersion = '8.8'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
-version = '6.7.0'
+version = '6.10.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '6.7.0.202309050840-r'
-    jettyVersion = '10.0.18'
-    slf4jVersion = '2.0.9'
+    jgitReleaseVersion = '6.10.0.202406032230-r'
+    jettyVersion = '10.0.22'
+    slf4jVersion = '2.0.13'
 }
 
 repositories {
