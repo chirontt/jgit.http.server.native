@@ -4,7 +4,7 @@
 
     <groupId>com.github.chirontt.jgit</groupId>
     <artifactId>jgit.http.server.native</artifactId>
-    <version>6.10.0</version>
+    <version>7.1.0</version>
     <packaging>jar</packaging>
 
     <name>JGitHttpServer</name> <!-- name of the resulting native executable -->
@@ -13,10 +13,10 @@
     <properties>
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jgit.release.version>6.10.0.202406032230-r</jgit.release.version>
-        <jetty.version>10.0.22</jetty.version>
-        <slf4j.version>2.0.13</slf4j.version>
-        <native.maven.plugin.version>0.10.2</native.maven.plugin.version>
+        <jgit.release.version>7.1.0.202411261347-r</jgit.release.version>
+        <jetty.version>11.0.24</jetty.version>
+        <slf4j.version>2.0.16</slf4j.version>
+        <native.maven.plugin.version>0.10.4</native.maven.plugin.version>
         <!-- main class name for exec:exec plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
         <!-- default values for server port, path to git repos, and path to LFS storage -->
@@ -29,7 +29,7 @@
         <sys.props></sys.props>
         <!-- packages/classes to be initialized at native image build time -->
         <build.time.init>
-            com.google.gson,javax.servlet,org.eclipse.jetty,org.eclipse.jgit,org.slf4j
+            com.google.gson,jakarta.servlet,org.eclipse.jetty,org.eclipse.jgit,org.slf4j
         </build.time.init>
         <!-- packages/classes to be initialized at native image run time -->
         <run.time.init>
@@ -73,12 +73,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.13.0</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -105,7 +105,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

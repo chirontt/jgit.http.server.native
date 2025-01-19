@@ -1,22 +1,22 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.10.2'
+    id 'org.graalvm.buildtools.native' version '0.10.4'
 }
 
 tasks.wrapper {
-    gradleVersion = '8.8'
+    gradleVersion = '8.12'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
-version = '6.10.0'
+version = '7.1.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '6.10.0.202406032230-r'
-    jettyVersion = '10.0.22'
-    slf4jVersion = '2.0.13'
+    jgitReleaseVersion = '7.1.0.202411261347-r'
+    jettyVersion = '11.0.24'
+    slf4jVersion = '2.0.16'
 }
 
 repositories {
@@ -100,7 +100,7 @@ graalvmNative {
             //packages/classes to be initialized at native image build time
             def buildTimeInitClasses = [
                 'com.google.gson',
-                'javax.servlet',
+                'jakarta.servlet',
                 'org.eclipse.jetty',
                 'org.eclipse.jgit',
                 'org.slf4j',

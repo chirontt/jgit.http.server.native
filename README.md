@@ -5,19 +5,18 @@ using GraalVM native-image utility.
 
 [JGit](http://www.eclipse.org/jgit/) is a pure Java implementation of the Git version control system,
 and is available as a library to be integrated into many projects.
-The JGit [project](https://git.eclipse.org/c/jgit/jgit.git/tree/) also implements a
-[git server](https://git.eclipse.org/c/jgit/jgit.git/tree/org.eclipse.jgit.http.server)
+The JGit [project](https://github.com/eclipse-jgit/jgit) also implements a
+[git server](https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.http.server)
 for the
-[Git HTTP protocol](https://github.com/git/git/blob/master/Documentation/technical/http-protocol.txt),
-in the form of a
-[servlet](https://git.eclipse.org/c/jgit/jgit.git/tree/org.eclipse.jgit.http.server/src/org/eclipse/jgit/http/server/GitServlet.java).
+[Git HTTP protocol](https://git-scm.com/docs/http-protocol), in the form of a
+[servlet](https://github.com/eclipse-jgit/jgit/blob/master/org.eclipse.jgit.http.server/src/org/eclipse/jgit/http/server/GitServlet.java).
 
 For [LFS](https://github.com/git-lfs/git-lfs/tree/main/docs/api) server support, JGit provides the
-[LFS server project](https://git.eclipse.org/c/jgit/jgit.git/tree/org.eclipse.jgit.lfs.server)
+[LFS server project](https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.lfs.server)
 which implements 2 servlets: the
-[Batch API servlet](https://git.eclipse.org/c/jgit/jgit.git/tree/org.eclipse.jgit.lfs.server/src/org/eclipse/jgit/lfs/server/LfsProtocolServlet.java),
+[Batch API servlet](https://github.com/eclipse-jgit/jgit/blob/master/org.eclipse.jgit.lfs.server/src/org/eclipse/jgit/lfs/server/LfsProtocolServlet.java),
 and the
-[LFS servlet](https://git.eclipse.org/c/jgit/jgit.git/tree/org.eclipse.jgit.lfs.server/src/org/eclipse/jgit/lfs/server/fs/FileLfsServlet.java)
+[LFS servlet](https://github.com/eclipse-jgit/jgit/blob/master/org.eclipse.jgit.lfs.server/src/org/eclipse/jgit/lfs/server/fs/FileLfsServlet.java)
 which supports upload/download of large objects to a separate storage in the local file system.
 In addition, this project implements a
 [servlet](src/main/java/com/github/chirontt/lfs/server/locks/LfsFileLockingProtocolServlet.java)
