@@ -1,38 +1,41 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.10.4'
+    id 'org.graalvm.buildtools.native' version '0.10.6'
 }
 
 tasks.wrapper {
-    gradleVersion = '8.12'
+    gradleVersion = '8.13'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
-version = '7.1.0'
+version = '7.2.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '7.1.0.202411261347-r'
-    jettyVersion = '11.0.24'
-    slf4jVersion = '2.0.16'
+    jgitReleaseVersion = '7.2.0.202503040940-r'
+    jettyVersion = '12.0.18'
+    slf4jVersion = '2.0.17'
 }
 
 repositories {
     mavenCentral()
+    maven {
+        url = "https://repo.eclipse.org/content/groups/releases/"
+    }
     mavenLocal()
 }
 
 compileJava {
-    options.release = 11  //use JDK11+ for compiling & running
+    options.release = 17
     options.encoding = 'UTF-8'
 }
 
 dependencies {
     implementation "org.eclipse.jgit:org.eclipse.jgit.http.server:$jgitReleaseVersion"
     implementation "org.eclipse.jgit:org.eclipse.jgit.lfs.server:$jgitReleaseVersion"
-    implementation "org.eclipse.jetty:jetty-servlet:$jettyVersion"
+    implementation "org.eclipse.jetty.ee10:jetty-ee10-servlet:$jettyVersion"
     implementation "org.slf4j:slf4j-simple:$slf4jVersion"
 }
 
@@ -84,7 +87,7 @@ task uberJar(type: Jar) {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
-    duplicatesStrategy 'exclude'
+    duplicatesStrategy = 'exclude'
 }
 
 graalvmNative {

@@ -101,6 +101,10 @@
   "methods":[{"name":"values","parameterTypes":[] }]
 },
 {
+  "name":"org.eclipse.jgit.dircache.DirCache$DirCacheVersion",
+  "methods":[{"name":"values","parameterTypes":[] }]
+},
+{
   "name":"org.eclipse.jgit.gitrepo.internal.RepoText",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
@@ -213,6 +217,18 @@
 },
 {
   "name":"org.eclipse.jgit.lib.CoreConfig$TrustPackedRefsStat",
+  "methods":[{"name":"values","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jgit.lib.CoreConfig$TrustStat",
+  "methods":[{"name":"values","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jgit.lib.GpgConfig$GpgFormat",
+  "methods":[{"name":"values","parameterTypes":[] }]
+},
+{
+  "name":"org.eclipse.jgit.transport.HttpConfig$HttpRedirectMode",
   "methods":[{"name":"values","parameterTypes":[] }]
 },
 {

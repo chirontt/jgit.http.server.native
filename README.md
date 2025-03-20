@@ -1,9 +1,12 @@
 # JGit HTTP Server + GraalVM native image
 
+[![Github Actions Build Status](https://github.com/chirontt/jgit.http.server.native/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/chirontt/jgit.http.server.native/actions/workflows/gradle-build.yml)
+[![Github Actions Build Status](https://github.com/chirontt/jgit.http.server.native/actions/workflows/maven-build.yml/badge.svg)](https://github.com/chirontt/jgit.http.server.native/actions/workflows/maven-build.yml)
+
 Sample project to compile JGit HTTP server, with LFS server support, to native executable
 using GraalVM native-image utility.
 
-[JGit](http://www.eclipse.org/jgit/) is a pure Java implementation of the Git version control system,
+[JGit](https://projects.eclipse.org/projects/technology.jgit) is a pure Java implementation of the Git version control system,
 and is available as a library to be integrated into many projects.
 The JGit [project](https://github.com/eclipse-jgit/jgit) also implements a
 [git server](https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.http.server)
@@ -54,21 +57,21 @@ To generate native executable, run the `nativeCompile` task:
 The `nativeCompile` task would take a while to compile the source code and link into an executable file.
 The resulting `JGitHttpServer` file is in:
 
-	build/native-image/JGitHttpServer
+	build/native/nativeCompile/JGitHttpServer
 
 (or if building on a Windows machine:
 
-	build\native-image\JGitHttpServer.exe
+	build\native\nativeCompile\JGitHttpServer.exe
 
 )
 
 which can then be run directly (with parameters):
 
-	./build/native-image/JGitHttpServer 8080 /path/to/repos /path/to/lfs/storage
+	./build/native/nativeCompile/JGitHttpServer 8080 /path/to/repos /path/to/lfs/storage
 
 (or if building on a Windows machine:
 
-	build\native-image\JGitHttpServer.exe 8080 \path\to\repos \path\to\lfs\storage
+	build\native\nativeCompile\JGitHttpServer.exe 8080 \path\to\repos \path\to\lfs\storage
 
 )
 
@@ -88,30 +91,21 @@ To generate native executable, run the `package` task:
 The `package` task would take a while to compile the source code and link into an executable file.
 The resulting `JGitHttpServer` file is in:
 
-	target/native-image/JGitHttpServer
+	target/JGitHttpServer
 
 (or if building on a Windows machine:
 
-	target\native-image\JGitHttpServer.exe
+	target\JGitHttpServer.exe
 
 )
 
 which can then be run directly (with parameters):
 
-	./target/native-image/JGitHttpServer 8080 /path/to/repos /path/to/lfs/storage
+	./target/JGitHttpServer 8080 /path/to/repos /path/to/lfs/storage
 
 (or if building on a Windows machine:
 
-	target\native-image\JGitHttpServer.exe 8080 \path\to\repos \path\to\lfs\storage
+	target\JGitHttpServer.exe 8080 \path\to\repos \path\to\lfs\storage
 
 )
-
-## Compressed native executable
-
-The resulting `JGitHttpServer` executable file, whether produced by Gradle or Maven build scripts,
-can be further reduced in size via compression using the [UPX](https://upx.github.io) utility,
-as described [here](https://medium.com/graalvm/compressed-graalvm-native-images-4d233766a214).
-
-As an example, the resulting `JGitHttpServer.exe` native application file produced in Windows
-is normally 35MB in size, but is compressed to 10MB with the UPX command: `upx --best JGitHttpServer.exe`
 

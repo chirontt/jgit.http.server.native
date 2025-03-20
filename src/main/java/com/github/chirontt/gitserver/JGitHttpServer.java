@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jgit.http.server.GitServlet;
 import org.eclipse.jgit.lfs.server.fs.FileLfsRepository;
 import org.eclipse.jgit.lfs.server.fs.FileLfsServlet;
@@ -93,7 +93,7 @@ public class JGitHttpServer {
         server.addConnector(gitConnector);
 
         ServletContextHandler gitContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        gitContext.setVirtualHosts(new String[]{"@git-connector"});
+        gitContext.setVirtualHosts(List.of("@git-connector"));
 
         //set up LFS servlets for each valid git repo under base-path
         List<Path> validRepos = getValidGitRepos(basePath);
@@ -129,7 +129,7 @@ public class JGitHttpServer {
 
     private static URI getBaseURI() {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                Runtime.getRuntime().exec("hostname").getInputStream()))) {
+                Runtime.getRuntime().exec(new String[]{"hostname"}).getInputStream()))) {
             String hostname = br.readLine();
             return new URI("http://" + hostname + ":" + serverPort);
         } catch (IOException e) {
