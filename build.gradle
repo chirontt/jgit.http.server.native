@@ -4,18 +4,18 @@ plugins {
 }
 
 tasks.wrapper {
-    gradleVersion = '8.13'
+    gradleVersion = '8.14.2'
     distributionType = Wrapper.DistributionType.ALL
 }
 
 group = 'com.github.chirontt.jgit'
 description = "JGit HTTP server's native executable built by GraalVM"
-version = '7.2.0'
+version = '7.3.0'
 
 ext {
     mainClassName = 'com.github.chirontt.gitserver.JGitHttpServer'
-    jgitReleaseVersion = '7.2.0.202503040940-r'
-    jettyVersion = '12.0.18'
+    jgitReleaseVersion = '7.3.0.202506031305-r'
+    jettyVersion = '12.0.22'
     slf4jVersion = '2.0.17'
 }
 
