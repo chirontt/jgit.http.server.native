@@ -159,6 +159,7 @@ public class JGitHttpServer {
             }
             try {
                 //set up the LFS file locking servlet for this repo
+//              MemoryLfsLockManager lockManager = new MemoryLfsLockManager(repoPath);
                 FileLfsLockManager lockManager = new FileLfsLockManager(Paths.get(lfsPath, repoName), repoPath);
                 context.addServlet(new ServletHolder(new LfsFileLockingServlet(lockManager, repoPath)),
                                    "/" + repoName + FILE_LOCKING_API_PATH);

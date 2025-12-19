@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  # Manually triggered via the Actions UI
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,16 +15,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        java-version: [17, 21]
+        java-version: [17, 21, 25]
         graalvm-distribution: ['graalvm-community']
       fail-fast: false
 
     steps:
       - name: Git checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Verify Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v5
 
       - name: Set up GraalVM ${{ matrix.graalvm-distribution }} for Java ${{ matrix.java-version }}
         uses: graalvm/setup-graalvm@v1
@@ -43,4 +45,9 @@ jobs:
       - name: Build with Gradle Wrapper (Windows)
         run: .\gradlew.bat --no-daemon --info nativeCompile
         if: runner.os == 'Windows'
+        env:
+          # Needed for Windows; to resolve issue with temp folder during native image build, due to
+          # relativization problem when different drives are used, such as in GHA runners.
+          # https://github.com/graalvm/native-build-tools/issues/754
+          GRADLE_OPTS: -Djava.io.tmpdir=${{ runner.temp }}
 

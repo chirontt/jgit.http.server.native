@@ -4,7 +4,7 @@
 
     <groupId>com.github.chirontt.jgit</groupId>
     <artifactId>jgit.http.server.native</artifactId>
-    <version>7.3.0</version>
+    <version>7.5.0</version>
     <packaging>jar</packaging>
 
     <name>JGitHttpServer</name> <!-- name of the resulting native executable -->
@@ -13,10 +13,10 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jgit.release.version>7.3.0.202506031305-r</jgit.release.version>
-        <jetty.version>12.0.22</jetty.version>
+        <jgit.release.version>7.5.0.202512021534-r</jgit.release.version>
+        <jetty.version>12.1.5</jetty.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <native.maven.plugin.version>0.10.6</native.maven.plugin.version>
+        <native.maven.plugin.version>0.11.3</native.maven.plugin.version>
         <!-- main class name for exec:exec plugin task -->
         <exec.mainClass>com.github.chirontt.gitserver.JGitHttpServer</exec.mainClass>
         <!-- default values for server port, path to git repos, and path to LFS storage -->
